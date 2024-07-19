@@ -1,5 +1,6 @@
 ﻿using WebApplication1.Services.Interfaces;
 using System.Collections.Generic;
+using WebApplication1.Models;
 
 namespace WebApplication1.Services
 {
@@ -14,27 +15,8 @@ namespace WebApplication1.Services
                 if (int.TryParse(value, out int number))
                 {
                     var result = new FizzBuzzResult { Value = number };
-
-                    if (number % 3 == 0 && number % 5 == 0)
-                    {
-                        result.Result = "FizzBuzz";
-                    }
-                    else if (number % 3 == 0)
-                    {
-                        result.Result = "Fizz";
-                    }
-                    else if (number % 5 == 0)
-                    {
-                        result.Result = "Buzz";
-                    }
-                    else
-                    {
-                        result.Result = string.Empty;
-                        result.Result = "Divided " +number+ " by 3 Divided "+number+" by 5";
-                        //result.Logs.Add($"Divided {number} by 3");
-                        //result.Logs.Add($"Divided {number} by 5");
-                    }
-
+                    result.Result = GetFizzBuzzResult(number);
+                    result.Logs = GenerateLogs(number);
                     results.Add(result);
                 }
                 else
@@ -45,6 +27,39 @@ namespace WebApplication1.Services
 
             return results;
         }
+
+        private string GetFizzBuzzResult(int number)
+        {
+            if (number % 3 == 0 && number % 5 == 0)
+            {
+                return FizzBuzzType.FizzBuzz.ToString();
+            }
+            else if (number % 3 == 0)
+            {
+                return FizzBuzzType.Fizz.ToString();
+            }
+            else if (number % 5 == 0)
+            {
+                return FizzBuzzType.Buzz.ToString();
+            }
+            else
+            {
+                return $"Divided {number} by 3 Divided {number} by 5";
+            }
+        }
+
+        private List<string> GenerateLogs(int number)
+        {
+            var logs = new List<string>();
+
+            if (number % 3 != 0 && number % 5 != 0)
+            {
+                logs.Add($"Divided {number} by 3");
+                logs.Add($"Divided {number} by 5");
+            }
+
+            return logs;
+        }
     }
 
     public class FizzBuzzResult
@@ -52,5 +67,12 @@ namespace WebApplication1.Services
         public int? Value { get; set; }
         public string Result { get; set; }
         public List<string> Logs { get; set; } = new List<string>();
+    }
+
+    public enum FizzBuzzType
+    {
+        FizzBuzz,
+        Fizz,
+        Buzz
     }
 }
